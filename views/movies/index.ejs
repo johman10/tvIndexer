@@ -1,0 +1,8 @@
+<a href="/">Back to the base page</a>
+
+<h1>Movies</h1>
+<% movies.forEach(function(movie) { %>
+  <a href="/movies/<%= movie.id %>/open"><%= movie.title %></a>
+  <img width="250" src="<%= movie.poster_url %>" alt="<%= movie.original_title %>">
+  <a href="/movies/<%= movie.id %>/destroy">Remove</a>
+<% }) %>
