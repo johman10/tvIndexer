@@ -1,47 +1,30 @@
 var MoviesController = require('MoviesController');
-var movieRoutes;
+var express = require('express');
+var router = express.Router();
+var moviesControllerInstance;
 
-movieRoutes = [
-  {
-    method: 'GET',
-    path: '/movies',
-    handler: function(request, response) {
-      var moviesControllerInstance = new MoviesController(request, response);
-      return moviesControllerInstance.index();
-    }
-  },
-  {
-    method: 'POST',
-    path: '/movies',
-    handler: function(request, response) {
-      var moviesControllerInstance = new MoviesController(request, response)
-      return moviesControllerInstance.create();
-    }
-  },
-  {
-    method: 'GET',
-    path: '/movies/sync',
-    handler: function(request, response) {
-      var moviesControllerInstance = new MoviesController(request, response)
-      return moviesControllerInstance.sync();
-    }
-  },
-  {
-    method: 'GET',
-    path: '/movies/{movieId}/destroy',
-    handler: function(request, response) {
-      var moviesControllerInstance = new MoviesController(request, response)
-      return moviesControllerInstance.destroy();
-    }
-  },
-  {
-    method: 'GET',
-    path: '/movies/{movieId}/open',
-    handler: function(request, response) {
-      var moviesControllerInstance = new MoviesController(request, response)
-      return moviesControllerInstance.open();
-    }
-  }
-];
+router.use(function timeLog (request, response, next) {
+  moviesControllerInstance = new MoviesController(request, response);
+  next();
+})
 
-module.exports = movieRoutes;
+router.route('/')
+  .get(function () {
+    moviesControllerInstance.index();
+  }).post(function (controller) {
+    moviesControllerInstance.create();
+  })
+
+router.post('/sync', function () {
+  moviesControllerInstance.sync();
+})
+
+router.get('/:movieId/destroy', function () {
+  moviesControllerInstance.destroy();
+})
+
+router.get('/:movieId', function () {
+  moviesControllerInstance.show();
+})
+
+module.exports = router

@@ -1,13 +1,14 @@
-const Model = require('../config/Model');
+const Model = require('Model');
 const Tmdb = require('Tmdb');
 const FindFile = require('FindFile');
 const ErrorHandler = require('ErrorHandler');
+const ErrorHandlerInstance = new ErrorHandler();
 const path = require('path');
 var TmdbItem = new Tmdb('83eb1bf692b23b1a308cf69600af3a4b');
 
 class Movie extends Model {
-  constructor(dbConnection) {
-    super(dbConnection, 'movies');
+  constructor() {
+    super('movies');
     this.errors = [];
     this.moviePromises = [];
   }
@@ -16,7 +17,7 @@ class Movie extends Model {
     var validationResults = [];
     validationResults.push(this.validatePresence(object.id));
     validationResults.push(this.validateUniqueness('id', object.id));
-    return Promise.all(validationResults).catch(new ErrorHandler);
+    return Promise.all(validationResults, ErrorHandlerInstance.log);
   }
 
   sync() {
@@ -25,7 +26,7 @@ class Movie extends Model {
       .then(foundFiles => {
         var movieObjects = this.processFiles(foundFiles);
         this.findMovies(movieObjects);
-      }).catch(new ErrorHandler);
+      }, ErrorHandlerInstance.log);
   }
 
   findMovies(movieObjects) {
@@ -35,7 +36,7 @@ class Movie extends Model {
           .then(this.buildRecord.bind(this, movieObject));
       });
 
-    Promise.all(promises).then(this.insert).catch(new ErrorHandler);
+    Promise.all(promises).then(this.insert, ErrorHandlerInstance.log);
   }
 
   buildRecord(movieObject, searchResult) {
@@ -59,8 +60,7 @@ class Movie extends Model {
             if (results[0]) record.poster_image = results[0];
             if (results[1]) record.badrop_image = results[1];
             resolve(record);
-          })
-          .catch(new ErrorHandler.bind(null, reject));
+          }, ErrorHandlerInstance.log);
       } else {
         delete record.title;
         resolve(record);

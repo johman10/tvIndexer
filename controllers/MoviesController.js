@@ -1,10 +1,10 @@
 const Movie = require('Movie');
+const ErrorHandler = require('ErrorHandler');
 const {shell} = require('electron');
 
 class MoviesController {
-  constructor(request, response) {
-    this.dbConnection = request.server.db.connection;
-    this.movieInstance = new Movie(this.dbConnection);
+  constructor(request, response, next) {
+    this.movieInstance = new Movie();
     this.request = request;
     this.response = response;
   }
@@ -12,21 +12,15 @@ class MoviesController {
   index() {
     this.movieInstance.all()
       .then((results) => {
-        this.response.view('movies/index', { movies: results });
-      })
-      .catch((error) => {
-        this.response.view('errors/500', { error: error });
-      });
+        this.response.render('movies/index', { movies: results });
+      }, new ErrorHandler(this.response).redirect);
   }
 
   create() {
     this.movieInstance.insert({test: 'hallo'})
       .then(() => {
         this.index();
-      })
-      .catch((error) => {
-        this.response.view('errors/500', { error: error });
-      });
+      }, new ErrorHandler(this.response).redirect);
   }
 
   sync() {
@@ -40,11 +34,11 @@ class MoviesController {
     this.index();
   }
 
-  open() {
+  show() {
     var movieId = parseInt(this.request.params.movieId);
-    this.movieInstance.get(movieId).then((movieResult) => {
+    this.movieInstance.find(movieId).then((movieResult) => {
       shell.openItem(movieResult.file_path);
-    });
+    }, new ErrorHandler(this.response).redirect);
   }
 }
 

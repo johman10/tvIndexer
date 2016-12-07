@@ -13,7 +13,7 @@ class FindFile {
   run() {
     return new Promise((resolve, reject) => {
       if (!fs.existsSync(this.startPath)){
-        reject('no dir ' + this.startPath);
+        reject('The directory ' + this.startPath + ' doesn\'t exist');
       }
 
       this.folderChecker();
