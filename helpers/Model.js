@@ -1,94 +1,113 @@
 const ErrorHandler = require('ErrorHandler');
-const ErrorHandlerInstance = new ErrorHandler();
 const db = require('server/Database');
+const request = require('request');
+const fs = require('fs-extra');
+const path = require('path');
 
 class Model {
-  constructor(tableName) {
-    this.tableName = tableName;
-    this.table = db[this.tableName];
+  constructor (tableName) {
+    this.table = db[tableName];
   }
 
-  all() {
+  all () {
     return new Promise((resolve, reject) => {
       this.table.find({}, (error, docs) => {
-        ErrorHandlerInstance.throw(error);
-        reject('hallo');
+        if (error) { return reject(error); }
         resolve(docs);
-      })
+      });
     });
   }
 
-  find(id) {
+  find (key, value) {
     return new Promise((resolve, reject) => {
-      this.table.findOne({ id: id }, (error, doc) => {
-        ErrorHandlerInstance.throw(error);
-        resolve(doc);
-      })
-    });
-  }
-
-  search(key, value) {
-    return new Promise((resolve, reject) => {
-      var query = {}
+      var query = {};
       query[key] = value;
-      this.table.find(query, (error, docs) => {
-        ErrorHandlerInstance.throw(error);
+      this.table.findOne(query, (error, doc) => {
+        if (error) { return reject(error); }
         resolve(doc);
       });
     });
   }
 
-  create(objects) {
-    return this.validations(objects)
-      .then((validationResults) => {
-        var failedIds = validationResults.filter(elem => elem !== true);
-        if (failedIds.length > 0) {
-          return this.insert(objects);
-        }
-      }, ErrorHandlerInstance.throw);
+  where (key, value) {
+    return new Promise((resolve, reject) => {
+      var query = {};
+      query[key] = value;
+      this.table.find(query, (error, docs) => {
+        if (error) { return reject(error); }
+        resolve(docs);
+      });
+    });
   }
 
-  validateUniqueness(key, value) {
-    return this.search(value, key)
+  create (object) {
+    return this.validations(object)
+      .then((validationResults) => {
+        if (!(validationResults.includes(false))) {
+          return this.insert(object);
+        }
+      }).catch(ErrorHandler.throw);
+  }
+
+  validateUniqueness (key, value) {
+    return this.where(value, key)
       .then((result) => {
         if (result.length == 0) {
           return true;
         } else {
           return result[0].id;
         }
-      }, ErrorHandlerInstance.throw);
+      }).catch(ErrorHandler.throw);
   }
 
-  validatePresence(value) {
-    if (value) {
-      return true;
-    } else {
-      return false;
-    }
+  validatePresence (value) {
+    return value !== undefined || value !== null;
   }
 
-  create(object) {
-    return this.table.insert(object).run(this.connection);
+  imageFromUrl (movieId, imageType, imageUrl) {
+    return new Promise((resolve, reject) => {
+      request.get({
+        url: imageUrl,
+        encoding: null
+      }, (error, response, body) => {
+        if (error) { return reject(error); }
+
+        var imageDirectory = path.join(process.cwd(), 'db/images', String(movieId));
+        var imageExtension = path.extname(imageUrl);
+        var fileName = imageType + imageExtension;
+        var filePath = path.join(imageDirectory, fileName);
+
+        fs.ensureDir(imageDirectory, function (error) {
+          if (error) { return reject(error); }
+
+          fs.writeFile(filePath, body, 'binary', function(error) {
+            if (error) { return reject(error); }
+            resolve(filePath);
+          });
+        });
+      });
+    });
   }
 
-  imageFromUrl(image_url) {
-    return r.http(image_url, { result_format: 'binary' }).run(this.connection);
+  insert (record) {
+    return new Promise((resolve, reject) => {
+      this.table.insert(record, function(error, newRecord) {
+        if (error) { return reject(error); }
+        resolve(newRecord);
+      });
+    });
   }
 
-  update(id, object) {
-    return this.table.get(id).update(object).run(this.connection);
-  }
-
-  replace(id, object) {
-    return this.table.get(id).replace(object).run(this.connection);
-  }
-
-  destroy(id) {
-    return this.delete(id);
-  }
-
-  delete(id) {
-    return this.table.get(id).delete().run(this.connection);
+  remove (key, value, options) {
+    return new Promise((resolve, reject) => {
+      var query = {};
+      query[key] = value;
+      options = options ? options : {};
+      this.table.remove(query, options, (error, numRemoved) => {
+        if (error) { return reject(error); }
+        resolve(numRemoved);
+      });
+    });
   }
 }
 

@@ -1,12 +1,12 @@
 const request = require('request');
 
 class Tmdb {
-  constructor(apiKey) {
+  constructor (apiKey) {
     this.apiKey = apiKey;
     this.baseUrl = 'https://api.themoviedb.org/3';
   }
 
-  searchMovie(searchword) {
+  searchMovie (searchword) {
     var apiPath = '/search/movie';
     var apiKeyQuery = '&api_key=' + this.apiKey;
     var query = '?query=' + searchword;
@@ -14,7 +14,7 @@ class Tmdb {
     return this.keepTrying(url);
   }
 
-  keepTrying(requestUrl) {
+  keepTrying (requestUrl) {
     return new Promise((resolve, reject) => {
       this.sendRequest(requestUrl).then((response) => {
         resolve(response);
@@ -31,7 +31,7 @@ class Tmdb {
     });
   }
 
-  sendRequest(requestUrl) {
+  sendRequest (requestUrl) {
     return new Promise((resolve, reject) => {
       request({
         method: 'GET',

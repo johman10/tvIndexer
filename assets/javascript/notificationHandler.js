@@ -15,3 +15,7 @@
 
 // console.log('reached');
 // localStorage.setItem('bgcolor', 'red');
+
+window.io.on('errorMessage', function(errorMessage) {
+  console.log(errorMessage);
+});

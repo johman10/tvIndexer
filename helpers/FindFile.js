@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 
 class FindFile {
-  constructor(startPath, filter) {
+  constructor (startPath, filter) {
     this.filter = filter;
     this.startPath = startPath;
     this.selectedFiles = [];
@@ -10,9 +10,9 @@ class FindFile {
     return this.run();
   }
 
-  run() {
+  run () {
     return new Promise((resolve, reject) => {
-      if (!fs.existsSync(this.startPath)){
+      if (!fs.existsSync(this.startPath)) {
         reject('The directory ' + this.startPath + ' doesn\'t exist');
       }
 
@@ -21,7 +21,7 @@ class FindFile {
     });
   }
 
-  folderChecker(folderPath) {
+  folderChecker (folderPath) {
     var scanFolder = folderPath || this.startPath;
     var files = fs.readdirSync(scanFolder);
     files.forEach((fileName) => {

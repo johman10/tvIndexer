@@ -3,33 +3,52 @@ class ErrorHandler {
     this.arguments = contructorArguments;
   }
 
-  log(errorMessage) {
+  static log (errorMessage) {
     if (!errorMessage) return;
-    this.error = this.generateError(errorMessage);
-    console.log(this.error);
-  };
+    let error = ErrorHandler.generateError(errorMessage);
+    console.log(error);
+  }
 
-  throw(errorMessage) {
+  log (errorMessage) {
+    ErrorHandler.log(errorMessage);
+  }
+
+  static throw (errorMessage) {
     if (!errorMessage) return;
-    this.error = this.generateError(errorMessage);
-    throw this.error;
-  };
+    let error = ErrorHandler.generateError(errorMessage);
+    throw error;
+  }
 
-  redirect(errorMessage) {
+  throw (errorMessage) {
+    ErrorHandler.throw(errorMessage);
+  }
+
+  redirect (errorMessage) {
     if (!errorMessage) return;
     this.response = this.arguments[0];
     this.error = this.generateError(errorMessage);
     return this.response.status(500).render('errors/500', { error: this.error });
   }
 
-  generateError(errorMessage) {
+  static generateError (errorMessage) {
     if (!errorMessage) return;
-    this.errorMessage = errorMessage;
-    if (this.errorMessage) {
-      return new Error(this.errorMessage);
-    } else {
-      return new Error(this.errorType);
+
+    if (errorMessage instanceof Error) {
+      this.errorMessage = errorMessage;
+      return this.errorMessage;
     }
+
+    if (typeof errorMessage == 'object') {
+      this.errorMessage = new Error(JSON.stringify(errorMessage));
+    } else {
+      this.errorMessage = new Error(errorMessage.toString());
+    }
+
+    return this.errorMessage;
+  }
+
+  generateError (errorMessage) {
+    ErrorHandler.generateError(errorMessage);
   }
 }
 

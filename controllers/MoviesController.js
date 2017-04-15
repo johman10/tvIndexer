@@ -4,23 +4,17 @@ const {shell} = require('electron');
 
 class MoviesController {
   constructor(request, response, next) {
-    this.movieInstance = new Movie();
+    this.movieInstance = new Movie(response.io);
     this.request = request;
     this.response = response;
+    this.errorInstance = new ErrorHandler(this.response);
   }
 
   index() {
     this.movieInstance.all()
       .then((results) => {
         this.response.render('movies/index', { movies: results });
-      }, new ErrorHandler(this.response).redirect);
-  }
-
-  create() {
-    this.movieInstance.insert({test: 'hallo'})
-      .then(() => {
-        this.index();
-      }, new ErrorHandler(this.response).redirect);
+      }).catch(this.errorInstance.redirect);
   }
 
   sync() {
@@ -30,15 +24,18 @@ class MoviesController {
 
   destroy() {
     var movieId = parseInt(this.request.params.movieId);
-    this.movieInstance.destroy(movieId);
+    this.movieInstance.removeFiles('id', movieId);
+    this.movieInstance.remove('id', movieId);
     this.index();
   }
 
   show() {
     var movieId = parseInt(this.request.params.movieId);
-    this.movieInstance.find(movieId).then((movieResult) => {
-      shell.openItem(movieResult.file_path);
-    }, new ErrorHandler(this.response).redirect);
+    this.movieInstance.find('id', movieId)
+      .then((movieResult) => {
+        shell.openItem(movieResult.file_path);
+      })
+      .catch(this.errorInstance.redirect);
   }
 }
 

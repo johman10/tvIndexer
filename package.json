@@ -5,22 +5,28 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec 'electron .'"
+    "start": "source .env.development; nodemon",
+    "build": "source .env.production; webpack"
   },
   "author": "Johan van Eck",
   "license": "ISC",
   "devDependencies": {
-    "electron-prebuilt": "^1.4.10",
-    "nodemon": "^1.11.0"
+    "electron-prebuilt": "^1.4.13",
+    "http-proxy-middleware": "^0.17.4",
+    "nodemon": "^1.11.0",
+    "webpack": "^2.4.1",
+    "webpack-dev-server": "^2.4.2"
   },
   "dependencies": {
-    "app-module-path": "^1.1.0",
-    "ejs": "^2.5.5",
-    "electron": "^1.4.10",
-    "express": "^4.14.0",
+    "app-module-path": "^2.2.0",
+    "electron": "^1.6.2",
+    "express": "^4.15.2",
+    "fs-extra": "^2.1.2",
+    "morgan": "^1.8.1",
     "nedb": "^1.8.0",
-    "request": "^2.79.0",
-    "socket.io": "^1.7.1",
+    "pug": "^2.0.0-beta11",
+    "request": "^2.81.0",
+    "socket.io": "^1.7.3",
     "vision": "^4.1.1"
   }
 }

@@ -1,0 +1,7 @@
+{
+  "exec": "webpack-dev-server & electron .",
+  "ext": "js json pug",
+  "ignore": [
+    "assets/*"
+  ]
+}
