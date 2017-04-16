@@ -1,16 +1,14 @@
 class ErrorHandler {
-  constructor(...contructorArguments) {
+  constructor(socketRoom, ...contructorArguments) {
+    this.socketRoom = socketRoom;
     this.arguments = contructorArguments;
   }
 
-  static log (errorMessage) {
+  log (errorMessage) {
     if (!errorMessage) return;
     let error = ErrorHandler.generateError(errorMessage);
+    this.socketRoom.emit('logError', errorMessage);
     console.log(error);
-  }
-
-  log (errorMessage) {
-    ErrorHandler.log(errorMessage);
   }
 
   static throw (errorMessage) {
@@ -38,7 +36,7 @@ class ErrorHandler {
       return this.errorMessage;
     }
 
-    if (typeof errorMessage == 'object') {
+    if (typeof errorMessage === 'object') {
       this.errorMessage = new Error(JSON.stringify(errorMessage));
     } else {
       this.errorMessage = new Error(errorMessage.toString());

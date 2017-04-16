@@ -7,16 +7,16 @@ const fs = require('fs-extra');
 var TmdbItem = new Tmdb('83eb1bf692b23b1a308cf69600af3a4b');
 
 class Movie extends Model {
-  constructor (socket) {
+  constructor (socketRoom) {
     super('movies');
-    this.socket = socket;
+    this.errorInstance = new ErrorHandler(socketRoom);
   }
 
   validations (object) {
     var validationResults = [];
     validationResults.push(this.validatePresence(object.id));
     validationResults.push(this.validateUniqueness('id', object.id));
-    return Promise.all(validationResults).catch(ErrorHandler.log);
+    return Promise.all(validationResults).catch(this.errorInstance);
   }
 
   sync () {
@@ -25,10 +25,7 @@ class Movie extends Model {
       .then((result) => {
         console.log(result);
       })
-      .catch((error) => {
-        ErrorHandler.log(error);
-        this.socket.emit('errorMessage', error);
-      });
+      .catch(this.errorInstance.log.bind(this.errorInstance));
   }
 
   removeFiles (key, value) {
@@ -38,7 +35,7 @@ class Movie extends Model {
         var fileFolder = path.join(process.cwd(), 'db/images', String(record.id));
         fs.removeSync(fileFolder);
       })
-      .catch(ErrorHandler.throw);
+      .catch(this.errorInstance.throw);
   }
 }
 

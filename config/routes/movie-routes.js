@@ -3,7 +3,6 @@ var express = require('express');
 var router = express.Router();
 var moviesControllerInstance;
 
-
 router.use(function timeLog (request, response, next) {
   moviesControllerInstance = new MoviesController(request, response);
   next();
@@ -16,10 +15,6 @@ router.route('/')
   .post(function () {
     moviesControllerInstance.create();
   });
-
-router.get('/sync', function () {
-  moviesControllerInstance.sync();
-});
 
 router.get('/:movieId/destroy', function () {
   moviesControllerInstance.destroy();

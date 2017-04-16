@@ -3,11 +3,11 @@ const ErrorHandler = require('ErrorHandler');
 const {shell} = require('electron');
 
 class MoviesController {
-  constructor(request, response, next) {
-    this.movieInstance = new Movie(response.io);
+  constructor(request, response) {
+    this.movieInstance = new Movie(response.socketRoom);
     this.request = request;
     this.response = response;
-    this.errorInstance = new ErrorHandler(this.response);
+    this.errorInstance = new ErrorHandler(response.socketRoom, response);
   }
 
   index() {
@@ -15,11 +15,6 @@ class MoviesController {
       .then((results) => {
         this.response.render('movies/index', { movies: results });
       }).catch(this.errorInstance.redirect);
-  }
-
-  sync() {
-    this.movieInstance.sync();
-    this.response.redirect('/');
   }
 
   destroy() {

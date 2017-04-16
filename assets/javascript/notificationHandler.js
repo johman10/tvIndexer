@@ -1,21 +1,25 @@
-// new Notification(function(variable, test, test1) {
-//   console.log(variable, test, test1);
-// });
-// const EventEmitter = require('events');
-// const ee = new EventEmitter;
-// const En = new EventNotification;
-// console.log(En);
+const handler = {
+  error (errorMessage, time = 5000) {
+    let element = buildNotificationElement('error');
+    let body = document.querySelector('body');
+    element.innerHTML = errorMessage;
+    body.appendChild(element);
 
-// En.on('infoNotification', () => {
-//   new Notification('Dashboard', 'infoNotification');
-// });
-// notificationObject.setupEventListeners(function(variable, test, test1) {
-//   console.log(variable, test, test1);
-// });
+    setRemoveTimeout(element, time);
+  }
+};
 
-// console.log('reached');
-// localStorage.setItem('bgcolor', 'red');
+// Remove element after timeout;
+function setRemoveTimeout (element, time) {
+  setTimeout(() => {
+    document.querySelector('body').removeChild(element);
+  }, time);
+}
 
-window.io.on('errorMessage', function(errorMessage) {
-  console.log(errorMessage);
-});
+function buildNotificationElement (type) {
+  let element = document.createElement('div');
+  element.classList.add('notification', 'notification--' + type);
+  return element;
+}
+
+export default handler;

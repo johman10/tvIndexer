@@ -5,12 +5,16 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "source .env.development; nodemon",
+    "dev": "source .env.development; nodemon",
+    "start": "source .env.production; webpack; electron .",
     "build": "source .env.production; webpack"
   },
   "author": "Johan van Eck",
   "license": "ISC",
   "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-preset-es2015": "^6.24.1",
     "electron-prebuilt": "^1.4.13",
     "http-proxy-middleware": "^0.17.4",
     "nodemon": "^1.11.0",
