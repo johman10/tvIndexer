@@ -1,5 +1,8 @@
+const autoBind = require('auto-bind');
+
 class ErrorHandler {
   constructor(socketRoom, ...contructorArguments) {
+    autoBind(this);
     this.socketRoom = socketRoom;
     this.arguments = contructorArguments;
   }

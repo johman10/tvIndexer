@@ -1,4 +1,3 @@
-const ErrorHandler = require('ErrorHandler');
 const db = require('server/Database');
 const request = require('request');
 const fs = require('fs-extra');
@@ -46,18 +45,22 @@ class Model {
         if (!(validationResults.includes(false))) {
           return this.insert(object);
         }
-      }).catch(ErrorHandler.throw);
+      });
+  }
+
+  createAll (records) {
+    let createPromises = [];
+    records.forEach((record) => {
+      createPromises.push(this.create(record));
+    });
+    return Promise.all(createPromises);
   }
 
   validateUniqueness (key, value) {
-    return this.where(value, key)
+    return this.where(key, value)
       .then((result) => {
-        if (result.length == 0) {
-          return true;
-        } else {
-          return result[0].id;
-        }
-      }).catch(ErrorHandler.throw);
+        return result.length == 0;
+      });
   }
 
   validatePresence (value) {

@@ -6,12 +6,18 @@ class Tmdb {
     this.baseUrl = 'https://api.themoviedb.org/3';
   }
 
-  searchMovie (searchword) {
+  findMovie (searchword, customData) {
     var apiPath = '/search/movie';
     var apiKeyQuery = '&api_key=' + this.apiKey;
     var query = '?query=' + searchword;
     var url = this.baseUrl + apiPath + query + apiKeyQuery;
-    return this.keepTrying(url);
+    return this.keepTrying(url).then((searchResult) => {
+      if (customData) {
+        Object.assign(searchResult.results[0], customData);
+      }
+
+      return searchResult.results[0];
+    });
   }
 
   keepTrying (requestUrl) {
