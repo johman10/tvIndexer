@@ -2,37 +2,82 @@
   "name": "tv-indexer",
   "version": "0.0.1",
   "description": "A tool to index your movies/series",
-  "main": "server.js",
+  "main": "./app/dist/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "source .env.development; nodemon",
-    "start": "source .env.production; webpack; electron .",
-    "build": "source .env.production; webpack"
+    "build": "yarn pack && build",
+    "build:dir": "yarn pack && build --dir",
+    "dev": "node tasks/runner.js",
+    "lint": "eslint --ext .js,.vue app",
+    "lint:fix": "eslint --ext .js,.vue --fix app",
+    "pack": "yarn pack:main && yarn pack:renderer",
+    "pack:main": "NODE_ENV=production webpack -p --progress --colors --config webpack.main.config.js",
+    "pack:renderer": "NODE_ENV=production webpack -p --progress --colors --config webpack.renderer.config.js",
+    "pack:no-compress": "yarn pack:main:no-compress && yarn pack:renderer:no-compress",
+    "pack:main:no-compress": "NODE_ENV=production webpack --progress --colors --config webpack.main.config.js",
+    "pack:renderer:no-compress": "NODE_ENV=production webpack --progress --colors --config webpack.renderer.config.js",
+    "postinstall": "yarn lint:fix"
+  },
+  "build": {
+    "productName": "TvIndexer",
+    "appId": "org.johanvaneck.tvindexer",
+    "dmg": {
+      "contents": [
+        {
+          "x": 410,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 130,
+          "y": 150,
+          "type": "file"
+        }
+      ]
+    },
+    "files": [
+      "app/dist/",
+      "dist/",
+      "node_modules/",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.video",
+      "icon": "app/assets/images/icon.icns"
+    }
   },
   "author": "Johan van Eck",
   "license": "ISC",
+  "dependencies": {
+    "babel-runtime": "^6.23.0",
+    "vue": "^2.3.3",
+    "vue-router": "^2.5.3"
+  },
   "devDependencies": {
     "babel-core": "^6.24.1",
-    "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.1",
-    "electron-prebuilt": "^1.4.13",
-    "http-proxy-middleware": "^0.17.4",
-    "nodemon": "^1.11.0",
-    "webpack": "^2.4.1",
-    "webpack-dev-server": "^2.4.2"
-  },
-  "dependencies": {
-    "app-module-path": "^2.2.0",
-    "auto-bind": "^1.1.0",
-    "electron": "^1.6.2",
-    "express": "^4.15.2",
-    "fs-extra": "^2.1.2",
-    "morgan": "^1.8.1",
-    "nedb": "^1.8.0",
-    "pug": "^2.0.0-beta11",
-    "request": "^2.81.0",
-    "socket.io": "^1.7.3",
-    "torrent-name-parser": "^0.6.5",
-    "vision": "^4.1.1"
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.0.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "css-loader": "^0.28.4",
+    "electron": "^1.6.8",
+    "electron-builder": "^18.1.0",
+    "electron-devtools-installer": "^2.2.0",
+    "eslint": "^3.19.0",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-html": "^2.0.3",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.11.1",
+    "html-webpack-plugin": "^2.28.0",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.1",
+    "url-loader": "^0.5.8",
+    "vue-loader": "^12.1.0",
+    "vue-style-loader": "^3.0.1",
+    "vue-template-compiler": "^2.3.3",
+    "webpack": "^2.6.0",
+    "webpack-dev-server": "^2.4.5"
   }
 }

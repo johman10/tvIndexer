@@ -1,0 +1,13 @@
+.loading {
+  display: none;
+}
+
+[v-cloak] {
+  .loading {
+    display: block;
+  }
+
+  *:not(.loading) {
+    display: none;
+  }
+}

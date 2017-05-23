@@ -1,8 +1,5 @@
 {
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
-  },
+  "parser": "babel-eslint",
   "rules": {
     "indent": [2, 2],
     "quotes": [2, "single"],
@@ -14,5 +11,8 @@
     "browser": true,
     "es6": true
   },
+  plugins: [
+    'html'
+  ],
   "extends": "eslint:recommended"
 }

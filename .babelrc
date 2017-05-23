@@ -1,3 +1,16 @@
 {
-  "presets": ["es2015"]
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "electron": 1,
+          "uglify": true
+        },
+        "useBuiltIns": true
+      }
+    ],
+    "stage-0"
+  ],
+  "plugins": ["transform-runtime"]
 }

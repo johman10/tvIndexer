@@ -1,7 +1,0 @@
-a(href="/") Back to the base page
-
-h1 Movies
-each movie in movies
-  a(href="/movies/" + movie.id)= movie.title
-  img(width="250", src=movie.poster_url, alt=movie.original_title)
-  a(href="/movies/" + movie.id + "/destroy") Remove
