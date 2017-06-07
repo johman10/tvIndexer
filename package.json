@@ -6,15 +6,15 @@
   "scripts": {
     "build": "yarn pack && build",
     "build:dir": "yarn pack && build --dir",
-    "dev": "node tasks/runner.js",
+    "dev": "source .env.development && node tasks/runner.js",
     "lint": "eslint --ext .js,.vue app",
     "lint:fix": "eslint --ext .js,.vue --fix app",
     "pack": "yarn pack:main && yarn pack:renderer",
-    "pack:main": "NODE_ENV=production webpack -p --progress --colors --config webpack.main.config.js",
-    "pack:renderer": "NODE_ENV=production webpack -p --progress --colors --config webpack.renderer.config.js",
+    "pack:main": "source .env.production && webpack -p --progress --colors --config webpack.main.config.js",
+    "pack:renderer": "source .env.production && webpack -p --progress --colors --config webpack.renderer.config.js",
     "pack:no-compress": "yarn pack:main:no-compress && yarn pack:renderer:no-compress",
-    "pack:main:no-compress": "NODE_ENV=production webpack --progress --colors --config webpack.main.config.js",
-    "pack:renderer:no-compress": "NODE_ENV=production webpack --progress --colors --config webpack.renderer.config.js",
+    "pack:main:no-compress": "source .env.production && webpack --progress --colors --config webpack.main.config.js",
+    "pack:renderer:no-compress": "source .env.production && webpack --progress --colors --config webpack.renderer.config.js",
     "postinstall": "yarn lint:fix"
   },
   "build": {
@@ -49,6 +49,7 @@
   "author": "Johan van Eck",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-runtime": "^6.23.0",
     "vue": "^2.3.3",
     "vue-router": "^2.5.3"

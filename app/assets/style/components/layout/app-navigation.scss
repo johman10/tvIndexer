@@ -1,6 +1,6 @@
 @import '~style/variables/colors';
 
 .app-navigation {
-  grid-area: app-navigation;
   background-color: $color-app-navigation-background;
+  grid-area: app-navigation;
 }

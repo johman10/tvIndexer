@@ -1,7 +1,5 @@
 'use strict';
 
-process.env.BABEL_ENV = 'renderer';
-
 const path = require('path');
 const webpack = require('webpack');
 
@@ -79,6 +77,8 @@ let rendererConfig = {
       vue: 'vue/dist/vue.esm.js',
       components: path.join(__dirname, 'app/components'),
       config: path.join(__dirname, 'app/config'),
+      models: path.join(__dirname, 'app/models'),
+      helpers: path.join(__dirname, 'app/helpers'),
       style: path.join(__dirname, 'app/assets/style'),
       fonts: path.join(__dirname, 'app/assets/fonts')
     },
