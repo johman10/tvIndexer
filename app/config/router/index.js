@@ -1,4 +1,6 @@
 import VueRouter from 'vue-router';
+import movieRoutes from 'config/router/movie-routes';
+import fallbackRoutes from 'config/router/fallback-routes';
 
 const routes = [
   {
@@ -6,15 +8,8 @@ const routes = [
     name: 'home',
     component: require('components/pages/page-home')
   },
-  {
-    path: '/movies',
-    name: 'movies',
-    component: require('components/pages/page-movies')
-  },
-  {
-    path: '*',
-    redirect: '/'
-  }
+  ...movieRoutes,
+  ...fallbackRoutes
 ];
 
 export default new VueRouter({
