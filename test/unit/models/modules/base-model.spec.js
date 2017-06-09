@@ -23,7 +23,7 @@ describe('BaseModel', () => {
       exampleInstance = new Example(movieRecord);
     });
 
-    it('can sets the constructor data correctly', () => {
+    it('can set the constructor data correctly', () => {
       expect(exampleInstance.record.id).to.equal(movieRecord.id);
     });
 
@@ -84,11 +84,23 @@ describe('BaseModel', () => {
         expect(result.length).to.equal(0);
       });
     });
+
+    describe('_stringToRecord', () => {
+      beforeEach(() => {
+        const stringRecord = JSON.stringify(movieRecord);
+        result = Example._stringToRecord(stringRecord);
+      });
+
+      it('returns an instance of the correct constructor', () => {
+        expect(result.constructor).to.equal(Example);
+      });
+    });
+
   });
 
   describe('instance method', () => {
     beforeEach(() => {
-      exampleInstance = new Example(movieRecord);
+      exampleInstance = new Example(Object.assign({}, movieRecord));
     });
 
     describe('save', () => {
@@ -111,6 +123,82 @@ describe('BaseModel', () => {
       it('returns an instance of the right constructor', () => {
         expect(savedRecord.constructor).to.equal(Example);
       });
+    });
+
+    describe('_getRecordId', () => {
+      describe('when an ID is present on the record', () => {
+        it('returns the same value as the ID', () => {
+          expect(exampleInstance._getRecordId()).to.equal(exampleInstance.id);
+        });
+      });
+
+      describe('when no ID is present on the record', () => {
+        describe('when the lastId is set in localStorage', () => {
+          let oldId;
+
+          beforeEach(() => {
+            localStorage.clear();
+            localStorage.examplesLastId = 6;
+            oldId = exampleInstance.record.id;
+            delete exampleInstance.record.id;
+          });
+
+          it('returns a value that is one higher than the saved id', () => {
+            expect(exampleInstance._getRecordId()).to.equal(7);
+          });
+
+          it('returns another value if the expected result already exists', () => {
+            localStorage[`examples${oldId}`] = 'testing';
+            localStorage.examplesLastId = oldId - 1;
+            expect(exampleInstance._getRecordId()).to.equal(oldId + 1);
+
+            localStorage[`examples${oldId + 1}`] = 'testing';
+            localStorage.examplesLastId = oldId - 1;
+            expect(exampleInstance._getRecordId()).to.equal(oldId + 2);
+          });
+        });
+
+        describe('when the lastId is NOT set in localStorage', () => {
+          it('returns 1 if no other records are present', () => {
+            localStorage.clear();
+            delete exampleInstance.record.id;
+            expect(exampleInstance._getRecordId()).to.equal(1);
+          });
+
+          it('returns the last known value + 1 when other records are present', () => {
+            localStorage.clear();
+            localStorage.examples1 = 'testing';
+            localStorage.examples3 = 'testing';
+            localStorage.examples5 = 'testing';
+            delete exampleInstance.record.id;
+
+            expect(exampleInstance._getRecordId()).to.equal(6);
+          });
+        });
+      });
+    });
+  });
+
+  describe('_getLocalStorageRecordKey', () => {
+    let result;
+
+    beforeEach(() => {
+      result = Example._getLocalStorageRecordKey(1);
+    });
+
+    it('returns a string', () => {
+      expect(typeof result).to.equal('string');
+    });
+
+    it('returns the tableName plus the ID', () => {
+      const tableName = new Example().tableName;
+      expect(result).to.equal(`${tableName}1`);
+    });
+
+    it('also works as an instance method', () => {
+      result = new Example()._getLocalStorageRecordKey(1);
+      const tableName = new Example().tableName;
+      expect(result).to.equal(`${tableName}1`);
     });
   });
 });

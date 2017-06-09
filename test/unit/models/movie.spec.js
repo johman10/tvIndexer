@@ -1,4 +1,5 @@
 import Movie from 'models/movie';
+import TmdbModel from 'models/modules/tmdb-model';
 import movieRecord from 'test/data/movie/record';
 import movieSearchResponse from 'test/data/movie/search-response';
 let movie;
@@ -8,23 +9,13 @@ describe('Movie', () => {
     movie = new Movie(movieRecord, movieSearchResponse);
   });
 
+  it('extends TmdbModel', () => {
+    expect(Movie.prototype instanceof TmdbModel).to.be.true;
+  });
+
   describe('constructor', () => {
     it('sets a tableName', () => {
       expect(movie.tableName).to.equal('movies');
-    });
-  });
-
-  describe('saveFirstResult', () => {
-    it('can safe the first API result', () => {
-      movie.saveFirstResult();
-      expect(movie.saved).to.be.true;
-      expect(localStorage[`movies${movie.id}`]).to.exist;
-    });
-
-    it('returns a Movie instance after saving the first result', () => {
-      movie.saveFirstResult();
-      expect(movie.saved).to.be.true;
-      expect(localStorage[`movies${movie.id}`]).to.exist;
     });
   });
 });

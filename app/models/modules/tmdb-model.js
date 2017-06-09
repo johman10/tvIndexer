@@ -12,6 +12,7 @@ export default class TmdbModel extends BaseModel {
     }
     Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
     this.save();
+    return this;
   }
 
   _buildRecord (saved = false) {
