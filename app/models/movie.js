@@ -1,11 +1,8 @@
-// TODO: Consider making this into a class with extend for overall functions such as save
-import BaseModel from 'models/base';
+import TmdbModel from 'models/modules/tmdb-model';
 
-export default class Movie extends BaseModel {
-  constructor (data = {}) {
-    super();
-    this.record = data;
-    this.searchResults = [];
+export default class Movie extends TmdbModel {
+  constructor (record = {}, apiResponse = {}) {
+    super(record, apiResponse);
     this.tableName = 'movies';
   }
 }

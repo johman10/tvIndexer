@@ -9,9 +9,13 @@
   "env": {
     "node": true,
     "browser": true,
-    "es6": true
+    "es6": true,
+    "mocha": true
   },
-  plugins: [
+  "globals": {
+    "expect": true
+  },
+  "plugins": [
     'html'
   ],
   "extends": "eslint:recommended"

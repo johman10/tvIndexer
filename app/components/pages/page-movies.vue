@@ -6,7 +6,7 @@
 
 <script>
   import Movie from 'models/movie';
-  import tmdbHelper from 'helpers/tmdb';
+  import tmdbHelper from 'helpers/tmdb-helper';
 
   export default {
     mounted () {
