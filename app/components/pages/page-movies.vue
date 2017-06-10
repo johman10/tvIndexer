@@ -6,12 +6,14 @@
 
 <script>
   import Movie from 'models/movie';
-  import tmdbHelper from 'helpers/tmdb-helper';
+  import File from 'models/file';
+  import tmdbApiHelper from 'helpers/tmdb/api-helper';
 
   export default {
     mounted () {
       window.Movie = Movie;
-      window.tmdbHelper = tmdbHelper;
+      window.File = File;
+      window.tmdbApiHelper = tmdbApiHelper;
       // movie.searchFirst('Pirates').then((result) => {
       //   console.log(result); // eslint-disable-line no-console
       // })

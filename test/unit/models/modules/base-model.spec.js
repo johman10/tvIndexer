@@ -1,4 +1,5 @@
 import BaseModel from 'models/modules/base-model';
+import Movie from 'models/movie';
 import movieRecord from 'test/data/movie/record';
 
 class Example extends BaseModel {
@@ -27,7 +28,7 @@ describe('BaseModel', () => {
       expect(exampleInstance.record.id).to.equal(movieRecord.id);
     });
 
-    it('adds getters for the record', () => {
+    it('adds getters for the record if record is an object', () => {
       expect(exampleInstance.id).to.equal(movieRecord.id);
     });
   });
@@ -83,6 +84,16 @@ describe('BaseModel', () => {
         result = Example.findAll();
         expect(result.length).to.equal(0);
       });
+
+      it('has the option to filter results', () => {
+        const customRecord = JSON.stringify({ test: 'test' });
+        localStorage.examples1 = customRecord;
+        localStorage.examples2 = customRecord;
+        result = Example.findAll('test', 'test');
+        expect(result.length).to.equal(2);
+        expect(result[0].record.test).to.equal('test');
+        expect(result[1].record.test).to.equal('test');
+      });
     });
 
     describe('_stringToRecord', () => {
@@ -101,6 +112,27 @@ describe('BaseModel', () => {
   describe('instance method', () => {
     beforeEach(() => {
       exampleInstance = new Example(Object.assign({}, movieRecord));
+    });
+
+    describe('getRelation', () => {
+      it('is able to handle an has one relation', () => {
+        localStorage.clear();
+        exampleInstance.record.movie = movieRecord.id;
+        localStorage[`movies${movieRecord.id}`] = JSON.stringify(movieRecord);
+        const relationData = exampleInstance.getRelation('movie');
+        expect(relationData.constructor).to.equal(Movie);
+      });
+
+      it('is able to handle an has many relation', () => {
+        localStorage.clear();
+        exampleInstance.record.movies = [movieRecord.id, 4];
+        localStorage[`movies${movieRecord.id}`] = JSON.stringify(movieRecord);
+        localStorage['movies4'] = JSON.stringify(movieRecord);
+        const relationData = exampleInstance.getRelation('movie');
+        expect(relationData.constructor).to.equal(Array);
+        expect(relationData[0].constructor).to.equal(Movie);
+        expect(relationData[1].constructor).to.equal(Movie);
+      });
     });
 
     describe('save', () => {

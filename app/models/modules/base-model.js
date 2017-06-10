@@ -1,3 +1,5 @@
+import pluralize from 'pluralize';
+
 export default class BaseModel {
   constructor (record = {}) {
     this.record = record;
@@ -8,19 +10,36 @@ export default class BaseModel {
     return `${this.tableName}LastId`;
   }
 
-  static findAll () {
+  static findAll (key, value) {
     const tableName = new this().tableName;
     const storageKeys = Object.keys(localStorage).filter((key) => key.startsWith(tableName));
-    const records = [];
-    storageKeys.forEach((storageKey) => {
-      records.push(this._stringToRecord(localStorage[storageKey]));
-    });
+    let records = storageKeys.map(storageKey => this._stringToRecord(localStorage[storageKey]));
+    if (key && value) {
+      records = records.filter(instance => instance.record[key] === value);
+    }
     return records;
   }
 
   static find (id) {
     const storageKey = this._getLocalStorageRecordKey(id);
     return this._stringToRecord(localStorage[storageKey]);
+  }
+
+  getRelation (relationName) {
+    const singularRelationName = pluralize.singular(relationName);
+    const pluralRelationName = pluralize.plural(relationName);
+    const relationClass = require(`models/${singularRelationName}`).default;
+    const relation = this.record[singularRelationName] || this.record[pluralRelationName];
+    if (typeof relation === 'number') {
+      // Has one relation
+      return relationClass.find(relation);
+    } else if (relation.constructor === Array) {
+      // Has many relation
+      return relation.map(id => relationClass.find(id));
+    } else if (!relation) {
+      // Belongs to relation
+      return relationClass.findAll('id', this.record.id);
+    }
   }
 
   save () {
@@ -33,6 +52,8 @@ export default class BaseModel {
   }
 
   _assignRecordKeys () {
+    if (this.record.constructor !== Object) return;
+
     const recordKeys = Object.keys(this.record);
     recordKeys.forEach((recordKey) => {
       if (!this.hasOwnProperty(recordKey)) {
