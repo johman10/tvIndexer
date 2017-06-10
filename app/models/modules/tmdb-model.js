@@ -17,7 +17,7 @@ export default class TmdbModel extends BaseModel {
 
   _buildRecord (saved = false) {
     const id = this._getRecordId();
-    const tmdbData = Object.assign({}, this.tmdbData);
+    const tmdbData = Object.assign({}, this.record.tmdbData);
     return {
       id,
       tmdbData,

@@ -133,6 +133,11 @@ describe('BaseModel', () => {
         expect(relationData[0].constructor).to.equal(Movie);
         expect(relationData[1].constructor).to.equal(Movie);
       });
+
+      // TODO: Write this test
+      it('is able to handle a belongs to relation', () => {
+
+      });
     });
 
     describe('save', () => {
