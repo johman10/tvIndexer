@@ -9,8 +9,7 @@ class File extends BaseModel {
   _buildRecord (saved) {
     return {
       id: this._getRecordId(),
-      movie: this.record.movie,
-      fileData: this.record.fileData,
+      ...this.record,
       saved
     };
   }
