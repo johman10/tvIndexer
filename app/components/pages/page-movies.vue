@@ -16,13 +16,14 @@
       window.File = File;
       window.Location = Location;
       window.tmdbHelper = tmdbHelper;
-      console.log(tmdbHelper); // eslint-disable-line no-console
-      tmdbHelper.movie.search('Pirates').then((result) => {
-        console.log(result); // eslint-disable-line no-console
-      })
-      .catch((error) => {
-        console.error(error); // eslint-disable-line no-console
-      });
+      // console.log(tmdbHelper); // eslint-disable-line no-console
+      // tmdbHelper.movie.search('Pirates')
+      //   .then((result) => {
+      //     console.log(result); // eslint-disable-line no-console
+      //   })
+      //   .catch((error) => {
+      //     console.error(error); // eslint-disable-line no-console
+      //   });
     }
   };
 </script>

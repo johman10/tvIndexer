@@ -2,7 +2,7 @@ import { app, BrowserWindow } from 'electron';
 
 let mainWindow;
 const winURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:8080' : `file://${__dirname}`;
+  ? 'http://localhost:8080' : `file://${__dirname}/index.html`;
 
 function createWindow () {
   /**
@@ -10,7 +10,12 @@ function createWindow () {
    */
   mainWindow = new BrowserWindow({
     height: 600,
-    width: 800
+    width: 800,
+
+    // Turned on to enable gridLayout
+    webPreferences: {
+      experimentalFeatures: true,
+    }
   });
 
   mainWindow.loadURL(winURL);
