@@ -1,13 +1,31 @@
 import pluralize from 'pluralize';
 
 export default class BaseModel {
-  constructor (record = {}) {
+  constructor (tableName = '', record = {}) {
+    if (arguments.length === 1) {
+      record = tableName;
+      tableName = undefined;
+    }
+
+    if (!tableName) {
+      throw new Error('You have to set `this.tableName` in the constructor of the extended class');
+    }
+
+    this.tableName = tableName;
     this.record = record;
     this._assignRecordKeys();
   }
 
   get _localStorageLastIdKey () {
     return `${this.tableName}LastId`;
+  }
+
+  _buildRecord (saved = false) {
+    return {
+      id: this._getRecordId(),
+      ...this.record,
+      saved
+    };
   }
 
   static findAll (key, value) {
@@ -20,25 +38,48 @@ export default class BaseModel {
     return records;
   }
 
+  static findBy (key, value) {
+    return this.findAll().find(this._keyValueFilter.bind(this, key, value));
+  }
+
+  static where (key, value) {
+    return this.findAll().filter(this._keyValueFilter.bind(this, key, value));
+  }
+
   static find (id) {
     const storageKey = this._getLocalStorageRecordKey(id);
     return this._stringToRecord(localStorage[storageKey]);
   }
 
-  getRelation (relationName) {
-    const singularRelationName = pluralize.singular(relationName);
-    const pluralRelationName = pluralize.plural(relationName);
-    const relationClass = require(`models/${singularRelationName}`).default;
-    const relation = this.record[singularRelationName] || this.record[pluralRelationName];
-    if (typeof relation === 'number') {
-      // Has one relation
+  // getRelation('hasOne', 'movie');
+  // getRelation('hasMany', 'movies');
+  // getRelation('belongsTo', 'movie');
+  // getRelation('belongsToMany', 'movies');
+  getRelation (type, relationKey) {
+    const singularRelationKey = pluralize.singular(relationKey);
+    const relationClass = require(`models/${singularRelationKey}`).default;
+    let singularResult;
+    let pluralRelationKey;
+    let pluralResult;
+    let relation;
+
+    switch(type) {
+    case 'hasOne':
+      relation = this.record[relationKey];
       return relationClass.find(relation);
-    } else if (relation.constructor === Array) {
-      // Has many relation
+    case 'hasMany':
+      relation = this.record[relationKey];
       return relation.map(id => relationClass.find(id));
-    } else if (!relation) {
-      // Belongs to relation
-      return relationClass.findAll('id', this.record.id);
+    case 'belongsTo':
+      pluralRelationKey = pluralize.plural(relationKey);
+      singularResult = relationClass.findBy(singularRelationKey, this.record.id);
+      pluralResult = relationClass.findBy(pluralRelationKey, this.record.id);
+      return singularResult || pluralResult;
+    case 'belongsToMany':
+      pluralRelationKey = pluralize.plural(relationKey);
+      singularResult = relationClass.where(singularRelationKey, this.record.id);
+      pluralResult = relationClass.where(pluralRelationKey, this.record.id);
+      return singularResult.concat(pluralResult);
     }
   }
 
@@ -97,6 +138,15 @@ export default class BaseModel {
     if (string) {
       const json = JSON.parse(string);
       return new this(json);
+    }
+  }
+
+  static _keyValueFilter (key, value, record) {
+    let requestedRecordValue = record[key];
+    if (Array.isArray(requestedRecordValue)) {
+      return requestedRecordValue.includes(value);
+    } else {
+      return requestedRecordValue === value;
     }
   }
 

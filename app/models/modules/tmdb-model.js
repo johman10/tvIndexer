@@ -1,8 +1,8 @@
 import BaseModel from 'models/modules/base-model';
 
 export default class TmdbModel extends BaseModel {
-  constructor (record = {}, apiResponse = {}) {
-    super(record);
+  constructor (tableName = '', record = {}, apiResponse = {}) {
+    super(tableName, record);
     this.apiResponse = apiResponse;
   }
 

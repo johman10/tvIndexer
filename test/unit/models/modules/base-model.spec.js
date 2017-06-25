@@ -4,15 +4,25 @@ import movieRecord from 'test/data/movie/record';
 
 class Example extends BaseModel {
   constructor(record = {}) {
-    super(record);
-    this.tableName = 'examples';
-    this.triggeredBuildRecord = false;
+    super('examples', record);
   }
 
   _buildRecord () {
     return {
       id: 1
     };
+  }
+}
+
+class ExampleWithoutBuildRecord extends BaseModel {
+  constructor(record = {}) {
+    super('examples', record);
+  }
+}
+
+class WrongExample extends BaseModel {
+  constructor(record = {}) {
+    super(record);
   }
 }
 
@@ -26,6 +36,10 @@ describe('BaseModel', () => {
 
     it('can set the constructor data correctly', () => {
       expect(exampleInstance.record.id).to.equal(movieRecord.id);
+    });
+
+    it('throws an error when there is no tableName in the extended class', () => {
+      expect(WrongExample).to.throw();
     });
 
     it('adds getters for the record if record is an object', () => {
@@ -48,7 +62,7 @@ describe('BaseModel', () => {
         });
 
         it('returns an instance with the right constructor', () => {
-          expect(result.constructor).to.equal(Example);
+          expect(result).to.be.an.instanceof(Example);
         });
 
         it('returns the right data', () => {
@@ -63,6 +77,20 @@ describe('BaseModel', () => {
           expect(result).to.not.exist;
         });
       });
+    });
+
+    // TODO: Write specs
+    describe('findBy', () => {
+      it('should return only one record');
+
+      it('should only return a record with matching key value');
+    });
+
+    // TODO: Write specs
+    describe('where', () => {
+      it('should return multiple records');
+
+      it('should only return records with matching key value');
     });
 
     describe('findAll', () => {
@@ -103,7 +131,7 @@ describe('BaseModel', () => {
       });
 
       it('returns an instance of the correct constructor', () => {
-        expect(result.constructor).to.equal(Example);
+        expect(result).to.be.an.instanceof(Example);
       });
     });
 
@@ -119,8 +147,8 @@ describe('BaseModel', () => {
         localStorage.clear();
         exampleInstance.record.movie = movieRecord.id;
         localStorage[`movies${movieRecord.id}`] = JSON.stringify(movieRecord);
-        const relationData = exampleInstance.getRelation('movie');
-        expect(relationData.constructor).to.equal(Movie);
+        const relationData = exampleInstance.getRelation('hasOne', 'movie');
+        expect(relationData).to.be.an.instanceof(Movie);
       });
 
       it('is able to handle an has many relation', () => {
@@ -128,15 +156,63 @@ describe('BaseModel', () => {
         exampleInstance.record.movies = [movieRecord.id, 4];
         localStorage[`movies${movieRecord.id}`] = JSON.stringify(movieRecord);
         localStorage['movies4'] = JSON.stringify(movieRecord);
-        const relationData = exampleInstance.getRelation('movie');
-        expect(relationData.constructor).to.equal(Array);
-        expect(relationData[0].constructor).to.equal(Movie);
-        expect(relationData[1].constructor).to.equal(Movie);
+        const relationData = exampleInstance.getRelation('hasMany', 'movies');
+        expect(relationData).to.be.an.instanceof(Array);
+        expect(relationData[0]).to.be.an.instanceof(Movie);
+        expect(relationData[1]).to.be.an.instanceof(Movie);
       });
 
-      // TODO: Write this test
       it('is able to handle a belongs to relation', () => {
+        localStorage.clear();
+        exampleInstance.save();
+        const newRecord = Object.assign({}, movieRecord);
+        newRecord.movie = exampleInstance.id;
+        localStorage[`movies${newRecord.id}`] = JSON.stringify(newRecord);
+        const relationData = exampleInstance.getRelation('belongsTo', 'movie');
+        expect(relationData).to.be.an.instanceof(Movie);
+        expect(relationData.movie).to.equal(exampleInstance.id);
+      });
 
+      it('is able to handle an belongs to many relation', () => {
+        let newRecord = Object.assign({}, movieRecord);
+        localStorage.clear();
+        exampleInstance.save();
+        newRecord.movies = [exampleInstance.id];
+        localStorage[`movies${newRecord.id}`] = JSON.stringify(newRecord);
+        newRecord = Object.assign({}, movieRecord);
+        newRecord.movie = exampleInstance.id;
+        localStorage['movies4'] = JSON.stringify(newRecord);
+        const relationData = exampleInstance.getRelation('belongsToMany', 'movies');
+        expect(relationData).to.be.an.instanceof(Array);
+        expect(relationData.length).to.equal(2);
+        expect(relationData[0].movie).to.equal(exampleInstance.id);
+        expect(relationData[1].movies[0]).to.equal(exampleInstance.id);
+      });
+    });
+
+    describe('_buildRecord', () => {
+      beforeEach(() => {
+        localStorage.clear();
+        exampleInstance = new ExampleWithoutBuildRecord({ test: 'value' });
+      });
+
+      it('has the method', () => {
+        expect(exampleInstance._buildRecord).to.exist;
+        expect(typeof exampleInstance._buildRecord).to.equal('function');
+      });
+
+      it('sets saved continually' , () => {
+        expect(exampleInstance._buildRecord(true).saved).to.be.true;
+        expect(exampleInstance._buildRecord(false).saved).to.be.false;
+        expect(exampleInstance._buildRecord().saved).to.be.false;
+      });
+
+      it('sets the record ID', () => {
+        expect(exampleInstance._buildRecord().id).to.equal(1);
+      });
+
+      it('sets other data', () => {
+        expect(exampleInstance._buildRecord().test).to.equal('value');
       });
     });
 

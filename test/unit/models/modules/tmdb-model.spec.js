@@ -6,8 +6,7 @@ let exampleInstance;
 
 class Example extends TmdbModel {
   constructor(record = {}, apiResponse = {}) {
-    super(record, apiResponse);
-    this.tableName = 'examples';
+    super('examples', record, apiResponse);
   }
 }
 

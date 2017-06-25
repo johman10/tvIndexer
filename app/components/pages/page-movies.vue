@@ -7,19 +7,22 @@
 <script>
   import Movie from 'models/movie';
   import File from 'models/file';
-  import tmdbApiHelper from 'helpers/tmdb/api-helper';
+  import Location from 'models/location';
+  import tmdbHelper from 'helpers/tmdb';
 
   export default {
     mounted () {
       window.Movie = Movie;
       window.File = File;
-      window.tmdbApiHelper = tmdbApiHelper;
-      // movie.searchFirst('Pirates').then((result) => {
-      //   console.log(result); // eslint-disable-line no-console
-      // })
-      // .catch((error) => {
-      //   console.error(error); // eslint-disable-line no-console
-      // });
+      window.Location = Location;
+      window.tmdbHelper = tmdbHelper;
+      console.log(tmdbHelper); // eslint-disable-line no-console
+      tmdbHelper.movie.search('Pirates').then((result) => {
+        console.log(result); // eslint-disable-line no-console
+      })
+      .catch((error) => {
+        console.error(error); // eslint-disable-line no-console
+      });
     }
   };
 </script>
