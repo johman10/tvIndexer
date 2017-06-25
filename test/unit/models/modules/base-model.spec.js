@@ -91,6 +91,8 @@ describe('BaseModel', () => {
       it('should return multiple records');
 
       it('should only return records with matching key value');
+
+      it('returns an empty record when there is no result');
     });
 
     describe('findAll', () => {

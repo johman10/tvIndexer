@@ -1,7 +1,7 @@
 import BaseModel from 'models/modules/base-model';
 
 export default class TmdbModel extends BaseModel {
-  constructor (tableName = '', record = {}, apiResponse = {}) {
+  constructor (tableName = '', record = { tmdbData: {} }, apiResponse = {}) {
     super(tableName, record);
     this.apiResponse = apiResponse;
   }
@@ -13,15 +13,5 @@ export default class TmdbModel extends BaseModel {
     Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
     this.save();
     return this;
-  }
-
-  _buildRecord (saved = false) {
-    const id = this._getRecordId();
-    const tmdbData = Object.assign({}, this.record.tmdbData);
-    return {
-      id,
-      tmdbData,
-      saved
-    };
   }
 }

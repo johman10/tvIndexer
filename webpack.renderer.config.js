@@ -83,7 +83,7 @@ let rendererConfig = {
       fonts: path.join(__dirname, 'app/assets/fonts'),
       test: path.join(__dirname, 'test')
     },
-    extensions: ['.js', '.vue', '.css']
+    extensions: ['.js', '.vue', '.css', 'index.js']
   }
 };
 
