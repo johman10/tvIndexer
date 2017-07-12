@@ -79,11 +79,12 @@ let rendererConfig = {
       config: path.join(__dirname, 'app/config'),
       models: path.join(__dirname, 'app/models'),
       helpers: path.join(__dirname, 'app/helpers'),
+      data: path.join(__dirname, 'app/data'),
       style: path.join(__dirname, 'app/assets/style'),
       fonts: path.join(__dirname, 'app/assets/fonts'),
       test: path.join(__dirname, 'test')
     },
-    extensions: ['.js', '.vue', '.css', 'index.js']
+    extensions: ['.js', '.vue', '.css', 'index.js', 'index.vue']
   }
 };
 

@@ -1,7 +1,7 @@
-import BaseModel from 'models/modules/base-model';
+import RLSDB from 'rlsdb';
 
-export default class Location extends BaseModel {
+export default class Location extends RLSDB {
   constructor (record = {}) {
-    super('locations', record);
+    super(record);
   }
 }

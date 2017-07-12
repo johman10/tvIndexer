@@ -1,8 +1,8 @@
-import BaseModel from 'models/modules/base-model';
+import RLSDB from 'rlsdb';
 
-export default class TmdbModel extends BaseModel {
-  constructor (tableName = '', record = { tmdbData: {} }, apiResponse = {}) {
-    super(tableName, record);
+export default class TmdbModel extends RLSDB {
+  constructor (record = { tmdbData: {} }, apiResponse = {}) {
+    super(record);
     this.apiResponse = apiResponse;
   }
 
@@ -10,8 +10,14 @@ export default class TmdbModel extends BaseModel {
     if (!this.tmdbData) {
       this.record.tmdbData = {};
     }
-    Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
-    this.save();
+
+    if (this.apiResponse.results[0]) {
+      const existingRecord = this.constructor.findBy('tmdbData.title', this.apiResponse.results[0].title);
+      if (existingRecord) return existingRecord;
+
+      Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
+      this.save();
+    }
     return this;
   }
 }
