@@ -1,0 +1,28 @@
+@import '~style/variables/colors';
+
+.list-filter {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 50px;
+  grid-column-gap: 5px;
+  // margin: 10px 0;
+  justify-items: start;
+  align-items: center;
+  align-content: center;
+
+  &__options {
+    background-color: $color-background-light;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  &__option {
+    display: inline-block;
+    padding: 5px 10px;
+    cursor: pointer;
+
+    &--active {
+      background-color: $color-background-active;
+    }
+  }
+}

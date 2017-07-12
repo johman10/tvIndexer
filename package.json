@@ -17,7 +17,7 @@
     "webpack:main:no-compress": "source .env.production && webpack --progress --colors --config webpack.main.config.js",
     "webpack:renderer:no-compress": "source .env.production && webpack --progress --colors --config webpack.renderer.config.js",
     "postinstall": "yarn lint:fix",
-    "unit": "source .env.test && karma start test/unit/karma.conf.js"
+    "test": "source .env.test && karma start test/unit/karma.conf.js"
   },
   "build": {
     "productName": "TvIndexer",

@@ -1,8 +1,10 @@
+@import '~style/variables/sizes';
+
 html,
 body {
   -webkit-font-smoothing: antialiased;
   font-family: 'Roboto';
-  font-size: 14px;
+  font-size: $size-font-regular;
   font-weight: 400;
   margin: 0;
   padding: 0;
