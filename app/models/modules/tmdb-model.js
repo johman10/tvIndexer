@@ -11,6 +11,8 @@ export default class TmdbModel extends RLSDB {
       this.record.tmdbData = {};
     }
 
+    // TODO: Maybe do a GET request for the movie to make it contain more data
+    // https://developers.themoviedb.org/3/movies
     if (this.apiResponse.results[0]) {
       const existingRecord = this.constructor.findBy('tmdbData.title', this.apiResponse.results[0].title);
       if (existingRecord) return existingRecord;
