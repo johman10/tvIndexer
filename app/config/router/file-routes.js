@@ -2,6 +2,6 @@ export default [
   {
     path: '/files',
     name: 'files',
-    component: require('components/pages/page-files')
+    component: () => import('components/pages/page-files')
   }
 ];

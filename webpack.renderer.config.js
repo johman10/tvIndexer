@@ -63,9 +63,13 @@ let rendererConfig = {
   },
   plugins: [
     new ExtractTextPlugin('[name].css'),
+    new webpack.optimize.CommonsChunkPlugin({
+      async: true
+    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './app/index.html'
+      template: './app/index.html',
+      bundles: ['renderer']
     })
   ],
   output: {

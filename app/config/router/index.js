@@ -7,13 +7,12 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: require('components/pages/page-home')
+    component: () => import('components/pages/page-home')
   },
   ...movieRoutes,
   ...fileRoutes,
   ...fallbackRoutes
 ];
-
 export default new VueRouter({
   scrollBehavior: () => ({ y: 0 }),
   routes
