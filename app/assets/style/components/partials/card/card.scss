@@ -1,0 +1,63 @@
+@import '~style/variables/colors';
+@import '~style/variables/sizes';
+@import '~style/mixins/paper-shadow';
+
+.card {
+  @include paper-shadow(2);
+  background-color: $color-white;
+  border-radius: 3px;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  transition: $transition-paper-shadow;
+
+  &:hover {
+    @include paper-shadow(1);
+  }
+
+  &__image {
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+
+    &--text {
+      align-items: center;
+      background-color: $color-background-dark;
+      color: $color-font-light;
+      display: flex;
+      font-size: $size-font-big;
+      justify-content: center;
+      padding: 10px;
+      text-align: center;
+    }
+  }
+
+  &__title-wrapper {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    padding: 5px 10px;
+  }
+
+  &__title {
+    flex: 1 0 10%;
+    font-size: $size-font-medium;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &--with-sub-title {
+      padding-right: 5px;
+    }
+  }
+
+  &__sub-title {
+    color: $color-font-medium;
+    float: right;
+    font-size: $size-font-regular;
+    margin-top: 3px;
+  }
+}

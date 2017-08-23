@@ -1,0 +1,21 @@
+$color-paper-shadow-1: rgba(0, 0, 0, .12) rgba(0, 0, 0, .24);
+$color-paper-shadow-2: rgba(0, 0, 0, .16) rgba(0, 0, 0, .23);
+$color-paper-shadow-3: rgba(0, 0, 0, .19) rgba(0, 0, 0, .23);
+$color-paper-shadow-4: rgba(0, 0, 0, .25) rgba(0, 0, 0, .22);
+$color-paper-shadow-5: rgba(0, 0, 0, .30) rgba(0, 0, 0, .22);
+
+$transition-paper-shadow: box-shadow .3s cubic-bezier(.25, .8, .25, 1);
+
+@mixin paper-shadow ($level) {
+  @if $level == 1 {
+    box-shadow: 0 1px 3px nth($color-paper-shadow-1, 1),  0 1px 2px nth($color-paper-shadow-1, 2);
+  } @else if $level == 2 {
+    box-shadow: 0 3px 6px nth($color-paper-shadow-2, 1),  0 3px 6px nth($color-paper-shadow-2, 2);
+  } @else if $level == 3 {
+    box-shadow: 0 10px 20px nth($color-paper-shadow-3, 1),  0 6px 6px nth($color-paper-shadow-3, 2);
+  } @else if $level == 4 {
+    box-shadow: 0 14px 28px nth($color-paper-shadow-4, 1),  0 10px 10px nth($color-paper-shadow-4, 2);
+  } @else if $level == 5 {
+    box-shadow: 0 19px 38px nth($color-paper-shadow-5, 1),  0 15px 12px nth($color-paper-shadow-5, 2);
+  }
+}

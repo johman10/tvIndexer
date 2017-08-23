@@ -1,14 +1,26 @@
 import RLSDB from 'rlsdb';
 
 export default class TmdbModel extends RLSDB {
-  constructor (record = { tmdbData: {} }, apiResponse = {}) {
+  constructor (record = {}, apiResponse = {}) {
     super(record);
     this.apiResponse = apiResponse;
   }
 
+  posterUrl (width = 185) {
+    if (Number.isInteger(width)) {
+      width = 'w' + width;
+    }
+
+    const validWidths = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original'];
+    if (!validWidths.includes(width)) throw new Error(`Invalid width defined, allowed value: ${validWidths}`);
+    if (!this.tmdbData || !this.tmdbData.poster_path) return;
+
+    return `http://image.tmdb.org/t/p/${width}${this.tmdbData.poster_path}`;
+  }
+
   saveFirstResult () {
     if (!this.tmdbData) {
-      this.record.tmdbData = {};
+      this.tmdbData = {};
     }
 
     // TODO: Maybe do a GET request for the movie to make it contain more data
@@ -17,7 +29,7 @@ export default class TmdbModel extends RLSDB {
       const existingRecord = this.constructor.findBy('tmdbData.title', this.apiResponse.results[0].title);
       if (existingRecord) return existingRecord;
 
-      Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
+      Object.assign(this.tmdbData, this.apiResponse.results[0]);
       this.save();
     }
     return this;

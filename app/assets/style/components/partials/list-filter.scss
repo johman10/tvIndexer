@@ -2,10 +2,10 @@
 
 .list-filter {
   display: grid;
+  grid-area: list-filters;
   grid-template-columns: auto 1fr;
   grid-template-rows: 50px;
   grid-column-gap: 5px;
-  // margin: 10px 0;
   justify-items: start;
   align-items: center;
   align-content: center;

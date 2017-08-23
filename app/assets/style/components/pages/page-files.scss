@@ -1,0 +1,19 @@
+@import '~style/variables/sizes';
+
+.page-files {
+  display: grid;
+  grid-row-gap: 10px;
+  grid-template:
+    'list-filters' #{$size-list-filter-height}
+    'files-list'   1fr
+    / 1fr;
+  padding: 10px 20px 20px;
+
+  &__list {
+    display: grid;
+    grid-area: files-list;
+    grid-auto-rows: 200px;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}

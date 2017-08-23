@@ -1,20 +1,25 @@
 <template>
-  <div>
+  <div class="page-files">
     <list-filter :options="filterOptions" @filter-change="applyFilter"></list-filter>
-    <file-card v-for="file in files" :file="file" :key="file.id"></file-card>
+    <div class="page-files__list">
+      <card @click="showFileInFolder(file)" v-for="file in files" :title="file.name" :sub-title="'#' + file.id" :info-lines="fileInfoLines(file)" :key="file.id" :imageText="getFileExtension(file)"></card>
+    </div>
   </div>
 </template>
+
+<style src="style/components/pages/page-files.scss"></style>
 
 <script>
   import File from 'models/file';
   import filterOptions from 'data/file/filter-options';
   import listFilter from 'components/partials/list-filter';
-  import fileCard from 'components/partials/file/file-card';
+  import card from 'components/partials/card/card';
+  import { shell } from 'electron';
 
   export default {
     components: {
       listFilter,
-      fileCard
+      card
     },
 
     data () {
@@ -29,6 +34,22 @@
     },
 
     methods: {
+      fileInfoLines (file) {
+        return [{
+          title: 'Folder',
+          data: file.dir
+        }];
+      },
+
+      getFileExtension (file) {
+        return file.ext.split('.').join('');
+      },
+
+      showFileInFolder (file) {
+        const filePath = file.dir + '/' + file.base;
+        shell.showItemInFolder(filePath);
+      },
+
       applyFilter (filterType) {
         switch (filterType) {
         case 'no-filter':

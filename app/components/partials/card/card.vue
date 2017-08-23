@@ -1,19 +1,18 @@
 <template>
-  <div class="card" @click="openFolder">
-    <div class="card__image">
-      {{ fileType }}
+  <div class="card" @click="$emit('click')">
+    <div v-if="imageSource" class="card__image" :style="imageStyle"></div>
+    <div v-else-if="imageText" class="card__image card__image--text">
+      <div class="card__text">
+        {{ imageText }}
+      </div>
     </div>
-    <div class="card__title">
-      {{ title }}
-      <span class="card__sub-title">#{{ subTitle }}</span>
+    <div class="card__title-wrapper">
+      <div :class="['card__title', { 'card__title--with-sub-title': !!subTitle }]">
+        {{ title }}
+      </div>
+      <span v-if="subTitle" class="card__sub-title">{{ subTitle }}</span>
     </div>
-    <div class="card__info">
-      <card-info-lines v-for='infoLine in infoLines' :title='infoLine.title' :value='infoLine.data'></card-info-lines>
-
-    </div>
-  </div>
-  <div class="card">
-
+    <card-info-line v-for='infoLine in infoLines' :key="infoLine.data" :title='infoLine.title' :value='infoLine.data'></card-info-line>
   </div>
 </template>
 
@@ -32,6 +31,14 @@
       imageText: String,
       subTitle: String,
       infoLines: Array
+    },
+
+    data () {
+      return {
+        imageStyle: {
+          backgroundImage: `url(${this.imageSource})`
+        }
+      };
     },
 
     components: {

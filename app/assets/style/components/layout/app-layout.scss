@@ -4,7 +4,6 @@
 .app-layout {
   display: grid;
   grid-template:
-    'app-header     app-header  app-header  app-header ' #{$size-app-header-height}
     'app-navigation app-content app-content app-content' #{1fr}
     / $size-app-navigation-width 1fr 1fr 1fr;
   height: 100vh;

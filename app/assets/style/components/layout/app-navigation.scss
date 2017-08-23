@@ -1,6 +1,36 @@
 @import '~style/variables/colors';
+@import '~style/mixins/paper-shadow';
+
+$item-height: 40px;
+$item-padding: 0 10px;
 
 .app-navigation {
+  @include paper-shadow(2);
   background-color: $color-app-navigation-background;
   grid-area: app-navigation;
+  z-index: 1;
+
+  &__header {
+    border-bottom: solid 1px darken($color-app-navigation-background, 10%);
+    color: darken($color-app-navigation-background, 40%);
+    height: $item-height;
+    line-height: $item-height;
+    padding: $item-padding;
+    text-transform: uppercase;
+  }
+
+  &__link {
+    color: $color-black;
+    display: block;
+    height: $item-height;
+    line-height: $item-height;
+    padding: $item-padding;
+    text-decoration: none;
+    transition: background-color .1s ease-in-out;
+    will-change: background-color;
+
+    &:hover {
+      background-color: darken($color-app-navigation-background, 10%);
+    }
+  }
 }

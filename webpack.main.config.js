@@ -33,7 +33,12 @@ let mainConfig = {
     })
   ],
   resolve: {
-    extensions: ['.js', '.json', '.vue']
+    extensions: ['.js', '.json', '.vue'],
+    alias: {
+      config: path.join(__dirname, 'app/config'),
+      helpers: path.join(__dirname, 'app/helpers'),
+      models: path.join(__dirname, 'app/models')
+    }
   }
 };
 

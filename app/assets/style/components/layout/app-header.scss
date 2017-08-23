@@ -1,9 +1,0 @@
-@import '~style/variables/colors';
-@import '~style/variables/sizes';
-
-.app-header {
-  background-color: $color-app-header-background;
-  grid-area: app-header;
-  line-height: $size-app-header-height;
-  text-align: center;
-}
