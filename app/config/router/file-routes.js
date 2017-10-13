@@ -1,7 +1,7 @@
 export default [
   {
     path: '/files',
-    name: 'files',
+    name: 'filesIndex',
     component: () => import('components/pages/page-files')
   }
 ];

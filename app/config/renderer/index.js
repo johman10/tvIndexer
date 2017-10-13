@@ -6,7 +6,6 @@ import appLayout from 'components/layout/app-layout';
 import router from 'config/router';
 
 import menuConfig from 'config/menu';
-console.log(menuConfig); // eslint-disable-line no-console
 menuConfig();
 Vue.use(VueRouter);
 

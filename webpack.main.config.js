@@ -29,7 +29,9 @@ let mainConfig = {
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
-      }
+      },
+
+      mangle: false
     })
   ],
   resolve: {

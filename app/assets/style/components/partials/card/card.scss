@@ -11,6 +11,7 @@
   grid-template-rows: 1fr auto;
   overflow: hidden;
   transition: $transition-paper-shadow;
+  height: 100%;
 
   &:hover {
     @include paper-shadow(1);

@@ -11,11 +11,8 @@
     "lint": "eslint --ext .js,.vue app",
     "lint:fix": "eslint --ext .js,.vue --fix app",
     "webpack": "yarn webpack:main && yarn webpack:renderer",
-    "webpack:main": "source .env.production && webpack -p --progress --colors --config webpack.main.config.js",
-    "webpack:renderer": "source .env.production && webpack -p --progress --colors --config webpack.renderer.config.js",
-    "webpack:no-compress": "yarn webpack:main:no-compress && yarn webpack:renderer:no-compress",
-    "webpack:main:no-compress": "source .env.production && webpack --progress --colors --config webpack.main.config.js",
-    "webpack:renderer:no-compress": "source .env.production && webpack --progress --colors --config webpack.renderer.config.js",
+    "webpack:main": "source .env.production && webpack --progress --colors --config webpack.main.config.js",
+    "webpack:renderer": "source .env.production && webpack --progress --colors --config webpack.renderer.config.js",
     "postinstall": "yarn lint:fix",
     "test": "source .env.test && karma start test/unit/karma.conf.js"
   },
@@ -53,7 +50,8 @@
   "dependencies": {
     "axios": "^0.16.2",
     "babel-runtime": "^6.23.0",
-    "rlsdb": "git+https://git@github.com/johman10/rlsdb.git#develop",
+    "javascript-debounce": "^1.0.0",
+    "rlsdb": "file:../rlsdb",
     "torrent-name-parser": "^0.6.5",
     "vue": "^2.3.4",
     "vue-router": "^2.6.0"

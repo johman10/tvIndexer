@@ -1,6 +1,8 @@
 <template>
   <div class="page-movies">
-    <card v-for="movie in movies" @click="openMovie(movie)" :title="movie.tmdbData.title" :key="movie.id" :imageSource="movie.posterUrl(500)" :imageText="movie.tmdbData.title"></card>
+    <router-link v-for="movie in movies" :key="movie.id" :to="{ name: 'movieShow', params: { id: movie.id }}">
+      <card :title="movie.tmdbData.title" :imageSource="movie.posterUrl(500)" :imageText="movie.tmdbData.title"></card>
+    </router-link>
   </div>
 </template>
 
@@ -9,9 +11,6 @@
 <script>
   import Movie from 'models/movie';
   import card from 'components/partials/card/card';
-  import { shell } from 'electron';
-
-
 
   export default {
     components: {
@@ -26,12 +25,6 @@
 
     mounted () {
       this.movies = Movie.findAll();
-    },
-
-    methods: {
-      openMovie (movie) {
-        shell.openExternal(movie.tmdbUrl);
-      }
     }
   };
 </script>

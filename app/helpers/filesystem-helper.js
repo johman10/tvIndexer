@@ -12,7 +12,7 @@ export function search (startPath, filter) {
   return filePathList;
 }
 
-export function findFileInfo (filePath, parseTorrent = false) {
+export function findInfo (filePath, parseTorrent = false) {
   if (!filePath) return;
 
   const fileInfo = path.parse(filePath);
@@ -21,6 +21,10 @@ export function findFileInfo (filePath, parseTorrent = false) {
     torrentInfo = torrentNameParser(fileInfo.name);
   }
   return { ...fileInfo, torrentInfo };
+}
+
+export function exists (filePath) {
+  return fs.existsSync(filePath);
 }
 
 function _folderChecker (folderPath, filter, fileList) {

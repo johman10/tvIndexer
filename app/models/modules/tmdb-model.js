@@ -13,23 +13,23 @@ export default class TmdbModel extends RLSDB {
 
     const validWidths = ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original'];
     if (!validWidths.includes(width)) throw new Error(`Invalid width defined, allowed value: ${validWidths}`);
-    if (!this.tmdbData || !this.tmdbData.poster_path) return;
+    if (!this.record.tmdbData || !this.record.tmdbData.poster_path) return;
 
-    return `http://image.tmdb.org/t/p/${width}${this.tmdbData.poster_path}`;
+    return `http://image.tmdb.org/t/p/${width}${this.record.tmdbData.poster_path}`;
   }
 
   saveFirstResult () {
-    if (!this.tmdbData) {
-      this.tmdbData = {};
+    if (!this.record.tmdbData) {
+      this.record.tmdbData = {};
     }
 
     // TODO: Maybe do a GET request for the movie to make it contain more data
     // https://developers.themoviedb.org/3/movies
     if (this.apiResponse.results[0]) {
-      const existingRecord = this.constructor.findBy('tmdbData.title', this.apiResponse.results[0].title);
+      const existingRecord = this.constructor.findBy('tmdbData.id', this.apiResponse.results[0].id);
       if (existingRecord) return existingRecord;
 
-      Object.assign(this.tmdbData, this.apiResponse.results[0]);
+      Object.assign(this.record.tmdbData, this.apiResponse.results[0]);
       this.save();
     }
     return this;

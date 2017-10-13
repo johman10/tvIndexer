@@ -6,6 +6,17 @@ class File extends RLSDB {
     super(record);
   }
 
+  get validations () {
+    return {
+      unique: 'torrentInfo.title',
+      required: 'torrentInfo'
+    };
+  }
+
+  get fullPath () {
+    return `${this.dir}/${this.base}`;
+  }
+
   async buildMovie () {
     const searchTerm = this.torrentInfo ? this.torrentInfo.title : this.name;
     const movie = await tmdbHelper.movie.search(searchTerm);

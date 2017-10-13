@@ -5,10 +5,15 @@ export default class Movie extends TmdbModel {
     super(record, apiResponse);
   }
 
+  get validations () {
+    return {
+      required: 'tmdbData',
+      unique: 'tmdbData.id'
+    };
+  }
+
   get tmdbUrl () {
     const host = 'https://www.themoviedb.org/movie/';
     return host + this.tmdbData.id;
   }
 }
-
-Movie.searchPath = '/search/movie';
