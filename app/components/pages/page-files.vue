@@ -1,9 +1,7 @@
 <template>
   <div class="page-files">
-    <list-filter :options="filterOptions" @filter-change="applyFilter"></list-filter>
-    <div class="page-files__list">
-      <card @click="showFileInFolder(file)" v-for="file in files" :title="file.name" :sub-title="'#' + file.id" :info-lines="fileInfoLines(file)" :key="file.id" :imageText="getFileExtension(file)"></card>
-    </div>
+    <list-filter class="page-files__filters" :options="filterOptions" @filter-change="applyFilter"></list-filter>
+    <card-grid-file class="page-files__list" @click="goToFile" :files="files"></card-grid-file>
   </div>
 </template>
 
@@ -13,13 +11,12 @@
   import File from 'models/file';
   import filterOptions from 'data/file/filter-options';
   import listFilter from 'components/partials/list-filter';
-  import card from 'components/partials/card/card';
-  import { shell } from 'electron';
+  import cardGridFile from 'components/partials/card/card-grid-file';
 
   export default {
     components: {
       listFilter,
-      card
+      cardGridFile
     },
 
     data () {
@@ -34,20 +31,8 @@
     },
 
     methods: {
-      fileInfoLines (file) {
-        return [{
-          title: 'Folder',
-          data: file.dir
-        }];
-      },
-
-      getFileExtension (file) {
-        return file.ext.split('.').join('');
-      },
-
-      showFileInFolder (file) {
-        const filePath = file.dir + '/' + file.base;
-        shell.showItemInFolder(filePath);
+      goToFile (file) {
+        this.$router.push({ name: 'fileShow', params: { fileId: file.id }});
       },
 
       applyFilter (filterType) {

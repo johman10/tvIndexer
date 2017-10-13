@@ -6,20 +6,11 @@ export default [
   },
 
   {
-    path: '/movies/:id',
+    path: '/movies/:movieId',
     name: 'movieShow',
     component: () => import('components/pages/page-movie'),
     props: route => ({
-      movieId: Number(route.params.id)
-    })
-  },
-
-  {
-    path: '/movies/:id/search',
-    name: 'movieSearch',
-    component: () => import('components/pages/page-movie-search'),
-    props: route => ({
-      movieId: Number(route.params.id)
+      movieId: Number(route.params.movieId)
     })
   }
 ];

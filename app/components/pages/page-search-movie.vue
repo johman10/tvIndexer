@@ -1,49 +1,54 @@
 <template>
-  <div class="page-movie-search">
-    <input type="text" name="movie-search" v-model="searchQuery">
-    <div class="page-movie-search__results">
-      <card v-for="movie in searchResults" :key="movie.tmdbData.id" :title="movie.tmdbData.title" :imageSource="movie.posterUrl(500)" :imageText="movie.tmdbData.title" @click="updateRecord(movie)"></card>
-    </div>
+  <div class="page-search-movie">
+    <input type="text" name="search-movie" v-model="searchQuery">
+    <card-grid-movie :movies="searchResults" @click="saveRecord"></card-grid-movie>
   </div>
 </template>
-
-<style src="style/components/pages/page-movie-search.scss"></style>
 
 <script>
   import Movie from 'models/movie';
   import debounce from 'javascript-debounce';
   import tmdb from 'helpers/tmdb';
 
-  import card from 'components/partials/card/card';
+  import cardGridMovie from 'components/partials/card/card-grid-movie';
 
   export default {
     components: {
-      card
+      cardGridMovie
     },
 
     props: {
+      query: String,
       movieId: Number
     },
 
     data () {
       return {
         movie: {},
-        searchQuery: '',
+        searchQuery: this.query,
         searchResults: []
       };
     },
 
     methods: {
       async search () {
+        if (!this.searchQuery) return;
+
         const movieRecord = await tmdb.movie.search(this.searchQuery);
         const apiMovies = movieRecord.apiResponse.results;
         this.searchResults = apiMovies.map(apiMovie => new Movie({ tmdbData: apiMovie }));
       },
 
-      updateRecord (movie) {
+      saveRecord (movie) {
         this.movie.record.tmdbData = movie.record.tmdbData;
         this.movie.save();
-        this.$router.push({ name: 'movieShow', props: { movieId: this.movie.id }});
+        if (this.movie.id) {
+          // Save succesfull, new record was created
+          this.$router.push({ name: 'movieShow', params: { movieId: this.movie.id }});
+        } else {
+          const existingMovie = Movie.findBy('tmdbData.title', movie.tmdbData.title);
+          this.$router.push({ name: 'movieShow', params: { movieId: existingMovie.id }});
+        }
       }
     },
 
@@ -60,8 +65,12 @@
     },
 
     created () {
-      this.movie = Movie.find(this.movieId);
-      this.searchQuery = this.movie.tmdbData.title;
+      if (this.movieId) {
+        this.movie = Movie.find(this.movieId);
+        this.search();
+      } else {
+        this.movie = new Movie();
+      }
     }
   };
 </script>

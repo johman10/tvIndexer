@@ -10,7 +10,7 @@ export function syncMovies () {
 }
 
 export function findMovies () {
-  const filePaths = search(MOVIES_DIRECTORY, /\(.avi|.mkv|.mp4\)$/);
+  const filePaths = getFilePaths();
   // TODO: code improve this
   const fileRecords = filePaths.map(filePath => new File(findInfo(filePath, true)));
   const moviePromises = fileRecords.map(fileRecord => fileRecord.buildMovie());
@@ -40,4 +40,9 @@ export function cleanup () {
   });
 }
 
-export default { syncMovies };
+function getFilePaths () {
+  const filePaths = search(MOVIES_DIRECTORY, /\(.avi|.mkv|.mp4\)$/);
+  return filePaths.filter(filePath => !File.findBy('fullPath', filePath));
+}
+
+export default { syncMovies, findMovies, cleanup };

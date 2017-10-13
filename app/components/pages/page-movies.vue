@@ -1,26 +1,28 @@
 <template>
   <div class="page-movies">
-    <router-link v-for="movie in movies" :key="movie.id" :to="{ name: 'movieShow', params: { id: movie.id }}">
-      <card :title="movie.tmdbData.title" :imageSource="movie.posterUrl(500)" :imageText="movie.tmdbData.title"></card>
-    </router-link>
+    <card-grid-movie :movies="movies" @click="goToMovie"></card-grid-movie>
   </div>
 </template>
 
-<style src="style/components/pages/page-movies.scss"></style>
-
 <script>
   import Movie from 'models/movie';
-  import card from 'components/partials/card/card';
+  import cardGridMovie from 'components/partials/card/card-grid-movie';
 
   export default {
     components: {
-      card
+      cardGridMovie
     },
 
     data () {
       return {
         movies: []
       };
+    },
+
+    methods: {
+      goToMovie (movie) {
+        this.$router.push({ name: 'movieShow', params: { movieId: movie.id }});
+      }
     },
 
     mounted () {

@@ -2,11 +2,14 @@
   <div class="page-movie" v-if="movie.tmdbData">
     <h1>{{ movie.tmdbData.title }}</h1>
     <button @click="openInfo">More info</button>
-    <router-link :to="{ name: 'movieSearch' }">
+    <router-link :to="{ name: 'searchMovie', query: { q: movie.tmdbData.title, movieId: movie.id } }">
       <button>
         Manually match
       </button>
     </router-link>
+    <button @click="removeMovie">
+      Remove
+    </button>
 
     <h2>Plot</h2>
     <p>{{ movie.tmdbData.overview }}</p>
@@ -15,8 +18,6 @@
     <button v-for="file in files" @click="openFile(file.fullPath)">{{ file.name }}</button>
   </div>
 </template>
-
-<style src="style/components/pages/page-movies.scss"></style>
 
 <script>
   import Movie from 'models/movie';
@@ -43,6 +44,11 @@
     methods: {
       openFile (fullPath) {
         shell.openItem(fullPath);
+      },
+
+      removeMovie () {
+        this.movie.remove([{ class: File, type: 'belongsTo' }]);
+        this.$router.push({ name: 'movieIndex' });
       },
 
       openInfo () {
