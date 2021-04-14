@@ -1,6 +1,5 @@
 import File from 'models/file';
-import Movie from 'models/movie';
-import { search, findInfo, exists } from 'helpers/filesystem-helper';
+import { search, findInfo, exists, fullPath } from 'helpers/filesystem-helper';
 
 const MOVIES_DIRECTORY = '/Volumes/Movies';
 
@@ -9,19 +8,15 @@ export function syncMovies () {
   findMovies();
 }
 
-export function findMovies () {
-  const filePaths = getFilePaths();
-  // TODO: code improve this
-  const fileRecords = filePaths.map(filePath => new File(findInfo(filePath, true)));
-  const moviePromises = fileRecords.map(fileRecord => fileRecord.buildMovie());
-  Promise.all(moviePromises)
-    .then((movieRecords) => {
-      movieRecords.forEach((movieRecord, index) => {
-        movieRecord = movieRecord.saveFirstResult();
-        fileRecords[index].record.movie = movieRecord.id;
+function findMovies () {
+  return getFilePaths()
+    .then(filePaths => {
+      const fileInfos = filePaths.map(filePath => findInfo(filePath, true));
+      fileInfos.forEach(fileInfo => {
+        fileInfo.fullPath = fullPath(fileInfo);
       });
-      fileRecords.map(fileRecord => fileRecord.save());
-      return movieRecords;
+      const filePromises = fileInfos.map(fileInfo => File.doc().set(fileInfo));
+      return Promise.all(filePromises);
     })
     .catch((error) => {
       // TODO: better errorHandling
@@ -30,19 +25,17 @@ export function findMovies () {
 }
 
 export function cleanup () {
-  const files = File.findAll();
-  const filePaths = files.map(file => file.fullPath);
-  filePaths.forEach((filePath, index) => {
-    const fileExists = exists(filePath);
-    if (!fileExists) {
-      files[index].remove([{ class: Movie, type: 'hasOne' }]);
-    }
-  });
+  return File.get()
+    .then(files => {
+      const filesToRemove = files.docs.filter(file => !exists(file.fullPath));
+      return Promise.all(filesToRemove.map(file => file.delete()));
+    });
 }
 
 function getFilePaths () {
   const filePaths = search(MOVIES_DIRECTORY, /\(.avi|.mkv|.mp4\)$/);
-  return filePaths.filter(filePath => !File.findBy('fullPath', filePath));
+  return File.get()
+    .then(files => {
+      return filePaths.filter(filePath => !files.docs.some(file => file.fullPath === filePath));
+    });
 }
-
-export default { syncMovies, findMovies, cleanup };

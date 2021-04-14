@@ -19,30 +19,30 @@
 <style src="style/components/partials/card/card.scss"></style>
 
 <script>
-  import cardInfoLine from 'components/partials/card/card-info-line';
+import cardInfoLine from 'components/partials/card/card-info-line';
 
-  export default {
-    props: {
-      title: {
-        type: String,
-        required: true
-      },
-      imageSource: String,
-      imageText: String,
-      subTitle: String,
-      infoLines: Array
+export default {
+  props: {
+    title: {
+      type: String,
+      required: true
     },
+    imageSource: String,
+    imageText: String,
+    subTitle: String,
+    infoLines: Array
+  },
 
-    data () {
-      return {
-        imageStyle: {
-          backgroundImage: `url(${this.imageSource})`
-        }
-      };
-    },
+  data () {
+    return {
+      imageStyle: {
+        backgroundImage: `url(${this.imageSource})`
+      }
+    };
+  },
 
-    components: {
-      cardInfoLine
-    }
-  };
+  components: {
+    cardInfoLine
+  }
+};
 </script>

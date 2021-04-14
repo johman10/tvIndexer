@@ -1,6 +1,6 @@
 import { remote } from 'electron';
 const { app, Menu } = remote;
-import syncHelper from 'helpers/sync-helper';
+import { syncMovies } from 'helpers/sync-helper';
 
 const template = [
   {
@@ -32,7 +32,7 @@ const template = [
       {type: 'separator'},
       {
         label: 'Sync',
-        click: syncHelper.syncMovies
+        click: syncMovies
       }
     ]
   },

@@ -1,19 +1,19 @@
-import axios from 'axios';
+const functions = require('firebase-functions');
+const axios = require('axios');
 const AXIOS_INSTANCE = axios.create({
   baseURL: 'https://api.themoviedb.org/3',
   params: {
-    api_key: process.env.TMDB_API_KEY
+    api_key: functions.config().tmdb.key
   }
 });
 
-const requestHelper = {
+module.exports = {
   performRequest (method, url, options) {
     return this.retryPromise(() => {
-      return AXIOS_INSTANCE({
-        method: method,
-        url,
-        ...options
-      });
+      return AXIOS_INSTANCE(Object.assign({
+        method,
+        url
+      }, options));
     });
   },
 
@@ -28,7 +28,9 @@ const requestHelper = {
             if (i >= 5) {
               return reject(err);
             }
+            console.error(err); // eslint-disable-line no-console
             const response = err.response;
+            if (!response) return reject(err);
             const statusCode = response.status;
             if (statusCode === 429) {
               const retryAfter = parseInt(response.headers['retry-after']);
@@ -42,5 +44,3 @@ const requestHelper = {
     });
   }
 };
-
-export default requestHelper;

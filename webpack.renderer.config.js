@@ -84,6 +84,7 @@ let rendererConfig = {
       models: path.join(__dirname, 'app/models'),
       helpers: path.join(__dirname, 'app/helpers'),
       data: path.join(__dirname, 'app/data'),
+      mixins: path.join(__dirname, 'app/mixins'),
       style: path.join(__dirname, 'app/assets/style'),
       fonts: path.join(__dirname, 'app/assets/fonts'),
       test: path.join(__dirname, 'test')

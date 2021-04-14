@@ -8,11 +8,11 @@
 <style src="style/components/layout/app-layout.scss"></style>
 
 <script>
-  import appNavigation from 'components/layout/app-navigation';
+import appNavigation from 'components/layout/app-navigation';
 
-  export default {
-    components: {
-      appNavigation
-    }
-  };
+export default {
+  components: {
+    appNavigation
+  }
+};
 </script>

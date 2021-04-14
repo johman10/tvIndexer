@@ -23,6 +23,11 @@ export function findInfo (filePath, parseTorrent = false) {
   return { ...fileInfo, torrentInfo };
 }
 
+export function fullPath (file) {
+  if (!file.dir || !file.base) return;
+  return path.join(file.dir, file.base);
+}
+
 export function exists (filePath) {
   return fs.existsSync(filePath);
 }
